@@ -1,0 +1,15 @@
+.c{text-align: center;}
+
+.l{text-align: left;}
+
+.vis{text-align: center;display: block;}
+
+.inv{text-align: center;display: none;}
+
+tr.bold td{font-weight: bold;}
+
+table.margin{position: absolute;left:-35px;border-spacing: 40px 0;}
+
+.skill_abilities{opacity:04;color:darkgray;}
+
+input.h3{font-size:1.17em; text-align:center; font-weight: bold; color:black}

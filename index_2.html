@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Character Sheet
+		</title>
+		<link rel="icon" type="image/png" href="/favicon-16x16.png">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+	</head>
+	<body>
+		<input type="text" placeholder="Character Name" id="name_box">
+		<input type="text" placeholder="Ancestry" id="ancestry_box">
+		
+		Character Level:
+		<input id="character_level" value=1 class="h3" size="1">
+
+		<div id="class_list">
+			<input type="text" placeholder="Class" data-class="0">
+			<input type="number" min="1" max="20" data-class="0" data-level placeholder="1" onchange="prof_bonus(); update_skill_prof_bonus()">
+			<input type="button" onclick="addClass();" data-class="0" value="Multiclass">
+		</div><br>
+		<div>
+			<h2>Proficiency Bonus</h2>
+			<input class="h3" id="prof_bonus" value=2 disabled size="1" onchange="">
+		</div><br>
+		<div id="ability_scores">
+			<h2>Ability Scores</h2>
+				<table class="">
+					<tr class="bold">
+						<td class="c" id="str_mod">0</td>
+						<td class="c" id="dex_mod">0</td>
+						<td class="c" id="con_mod">0</td>
+						<td class="c" id="int_mod">0</td>
+						<td class="c" id="wis_mod">0</td>
+						<td class="c" id="cha_mod">0</td>
+					</tr>
+					<tr class="margin">
+						<td><input type="number" min=1 id="str_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'str');"></td>
+						<td><input type="number" min=1 id="dex_score" data-ability-score placeholder="10" ></td>
+						<td><input type="number" min=1 id="con_score" data-ability-score placeholder="10" ></td>
+						<td><input type="number" min=1 id="int_score" data-ability-score placeholder="10" ></td>
+						<td><input type="number" min=1 id="wis_score" data-ability-score placeholder="10" ></td>
+						<td><input type="number" min=1 id="cha_score" data-ability-score placeholder="10" ></td>
+					</tr>
+					<tr>
+						<td class="c">Strength</td>
+						<td class="c">Dexterity</td>
+						<td class="c">Constitution</td>
+						<td class="c">Intelligence</td>
+						<td class="c">Wisdom</td>
+						<td class="c">Charisma</td>
+					</tr>
+				</table>
+		</div>
+		<br>
+		<div id="skill_scores">
+			<table id="skill_table" class="margin">
+				<tr>
+					<th class="l">Skills</th>
+					<th class="c">Proficiency</th>
+					<th class="c">Expertise</th>
+					<th class="c">Bonus</th>
+				</tr>
+			</table>
+		</div>
+	</body>
+	<script src="scripts.js"></script>
+</html>

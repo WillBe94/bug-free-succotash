@@ -12,4 +12,12 @@ table.margin{position: absolute;left:-35px;border-spacing: 40px 0;}
 
 .skill_abilities{opacity:04;color:darkgray;}
 
-input.h3{font-size:1.17em; text-align:center; font-weight: bold; color:black}
+input.h3
+{
+	font-size:1.17em;
+	text-align:center;
+	font-weight:bold;
+	color:black;
+	width:1.5em;
+	border:none;
+}

@@ -44,23 +44,67 @@ const prof_bonus_dict =
 	20:6,
 };
 
+const ability_list = 
+{
+	"str":["athletics"],
+	"dex":["acrobatics","sleight of hand","stealth"],
+	"int":["arcana","history","investigation","nature","religion"],
+	"wis":["animal handling","insight","medicine","perception","survival"],
+	"cha":["deception","intimidation","performance","persuasion"]
+};
+
+const skill_element_list = 
+{
+	"acrobatics":"dex_mod",
+	"animal handling":"wis_mod",
+	"arcana":"int_mod",
+	"athletics":"str_mod",
+	"deception":"cha_mod",
+	"history":"int_mod",
+	"insight":"wis_mod",
+	"intimidation":"cha_mod",
+	"investigation":"int_mod",
+	"medicine":"wis_mod",
+	"nature":"int_mod",
+	"perception":"wis_mod",
+	"performance":"cha_mod",
+	"persuasion":"cha_mod",
+	"religion":"int_mod",
+	"sleight of hand":"dex_mod",
+	"stealth":"dex_mod",
+	"survival":"wis_mod"
+}
+
+const global_prof_bonus_element = document.getElementById("prof_bonus");
+
 document.addEventListener("load",init());
 
 function init()
 {
+	//create skills
+	generate_skills_table();
+
 	//default ability scores to 10
 	const ability_scores = document.querySelectorAll("input[data-ability-score]");
 	for (let i=0; i<6; i++)
 	{
 		ability_scores[i].value=10;
+		fireOnChange(ability_scores[i]);
 	}
 
-	//create skills
-	generate_skills_table();
-
 	//default level to 1
-	const level = document.querySelector("input[data-level]");
-	level.value="";
+	const class_level = document.querySelectorAll("input[data-level");
+	class_level[0].value="";
+	document.getElementById("character_level").value = 1;
+	//default proficiency bonus to 2
+	const prof_bonus = document.getElementById("prof_bonus");
+	prof_bonus.value="2";
+}
+
+function fireOnChange(element)
+{
+	const event = new Event('change');
+	element.dispatchEvent(event);
 }
 
 function generate_skills_table()
@@ -114,7 +158,7 @@ function generate_skills_table()
 				const skill_expertise = document.createElement("input");
 				skill_expertise.type = "checkbox";
 				skill_expertise.setAttribute("id",skill_list[i][0].toLowerCase()+"_exp");
-				skill_expertise.setAttribute("data-expertise",false);
+				skill_expertise.setAttribute("data-expertise",skill_list[i][0].toLowerCase());
 				skill_expertise.className = "inv";
 				skill_expertise.setAttribute("onchange", "update_skill_exp(this.id, this.checked);");
 				exp_td.appendChild(skill_expertise);
@@ -143,10 +187,10 @@ function show_hide_expertise(expertise, value)
 	}
 }
 
-function prof_bonus()
+function total_class_level()
 {
 	const level_element = document.getElementById("character_level");
-	const prof_bonus_element = document.getElementById("prof_bonus");
+	//const prof_bonus_element = document.getElementById("prof_bonus");
 	const class_elements=document.querySelectorAll("input[data-level]");
 
 	let total=0;
@@ -164,19 +208,25 @@ function prof_bonus()
 	if(total > 20)
 	{
 		total=20;
+	
 	}
+	level_element.value = total;
+	
+	//console.log(prof_bonus_element.value);
+	//console.log(test.value);
+	fireOnChange(level_element);
+}
 
-	level_element.innerHTML=total;
-	prof_bonus_element.innerHTML= prof_bonus_dict[total];
-
+function calc_prof_bonus(level)
+{
+	global_prof_bonus_element.value = prof_bonus_dict[level];
 }
 
 function addClass()
 {
 	//fetch stuff
 	const list = document.querySelectorAll("input[data-class]");
-	//console.log(list.length);
-	//console.log(list);
+
 	const next_index = list.length/3;
 	const last_element = list[next_index];
 	const end_of_list = document.getElementById("class_list");
@@ -212,21 +262,29 @@ function addClass()
 
 function removeClass(index)
 {
+	//collect ALL elements with data-class attribute; this is a list of every class name, level element, and button
 	let list = document.querySelectorAll("[data-class]");
-	//console.log(list);
-	for (let i=0; i<list.length; i++)
+	let total=0;
+	for(let i=0; i<list.length; i++)
 	{
-		if (list[i].getAttribute("data-class")==index)
+		//filter out the number elements
+		if(list[i].type == "number" && list[i].getAttribute("data-class") != index)
 		{
-			if(list[i].type=="number")
-			{
-				let element = document.getElementById("character_level");
-				element.innerHTML -= Number(list[i].value);
-			}
+			//track the total number of levels, excluding the specific index
+			total+=Number(list[i].value);
+		}
+		//remove the three elements with the specific index
+		if(list[i].getAttribute("data-class") == index)
+		{
 			list[i].remove();
 		}
 	}
+	//fetch level element
+	const level_element = document.getElementById("character_level");
+	//set level to the total: remove the indexed class' value from the total.
+	level_element.value = total;
 
+	//decrement remaining elements greater than the selected index
 	list = document.querySelectorAll("[data-class]");
 	for (let i = index*3; i < list.length; i++)
 	{
@@ -237,33 +295,37 @@ function removeClass(index)
 			list[i].setAttribute("onclick","removeClass("+(new_index)+");");
 		}
 	}
+
+	//fire onchange for character level because HTML is stupid and only fires when the USER changes shit
+	fireOnChange(level_element);
 }
 
 function ability_mod(score, ability)
 {
 	const ability_mod_element = document.getElementById(ability+"_mod");
 	const modifier = Math.floor((score-10)/2);
-	ability_mod_element.innerHTML = modifier;
+	ability_mod_element.value = modifier;
+	fireOnChange(ability_mod_element);
 }
 
 function update_skill_prof_bonus()
 {
-	//console.log(skill_name);
+
 	const prof_list = document.querySelectorAll("input[data-proficient]");
 	const exp_list = document.querySelectorAll("input[data-expertise");
-	const prof_bonus = document.getElementById("prof_bonus").innerHTML;
+	const prof_bonus = Number(document.getElementById("prof_bonus").value);
 	for(let i=0; i<prof_list.length; i++)
 	{
 		const skill_name=prof_list[i].getAttribute("data-proficient");
-		//console.log(skill_name);
+
 		//prof_list[i].parentElement;
 		let skill_bonus = document.getElementById(skill_name).innerHTML;
 		if(prof_list[i].checked)
 		{
-			skill_bonus = Number(prof_bonus);
+			skill_bonus = prof_bonus;
 			if(exp_list[i].checked)
 			{
-				skill_bonus = Number(skill_bonus)+Number(prof_bonus);
+				skill_bonus = Number(skill_bonus)+prof_bonus;
 			}
 		}
 		else
@@ -275,7 +337,39 @@ function update_skill_prof_bonus()
 
 function update_skill_ability(ability_mod)
 {
+	//fetch element containing ability modifier
+	const ability_mod_val = document.getElementById(ability_mod+"_mod").value;
 
+	
+	//use ability modifier to fetch an array of skills to update
+	const skills = ability_list[ability_mod];
+
+	
+	
+	//iterate through the list of skills
+	for(let i=0; i<skills.length; i++)
+	{
+		let prof_bonus=0;
+		let expertise_bonus=0;
+		//console.log(document.getElementById(skills[i]+"_prof"));
+		//is proficient?
+		const isProficient = document.getElementById(skills[i]+"_prof").checked;
+		if(isProficient)
+		{
+			prof_bonus=document.getElementById("prof_bonus").value;
+		}
+
+		//is expert?
+		const isExpert = document.getElementById(skills[i]+"_exp").checked;
+		if(isExpert)
+		{
+			expertise_bonus=document.getElementById("prof_bonus").value;
+		}
+
+		//fetch the element containing the skill's bonus
+		const skill_bonus_element = document.getElementById(skills[i]);
+		skill_bonus_element.innerHTML = skill_bonus_calc(ability_mod_val, prof_bonus, expertise_bonus);
+	}
 }
 
 function update_skill_prof(skill, checked)
@@ -286,30 +380,30 @@ function update_skill_prof(skill, checked)
 	
 	if(checked)
 	{
-		element.innerHTML = Number(element.innerHTML) + Number(prof_bonus.innerHTML);
+		element.innerHTML = Number(element.innerHTML) + Number(prof_bonus.value);
 	}
 	else
 	{
-		element.innerHTML = Number(element.innerHTML) - Number(prof_bonus.innerHTML);
+		element.innerHTML = Number(element.innerHTML) - Number(prof_bonus.value);
 	}
 }
 
 function update_skill_exp(skill, checked)
 {
 	const skill_name = skill.slice(0,-4);
-	//console.log(skill_name);
-	
+
 	const element = document.getElementById(skill_name);
-	const prof_bonus = document.getElementById("prof_bonus");
+	const prof_bonus = global_prof_bonus_element.value;
+	//const prof_bonus = document.getElementById("prof_bonus");
 	
 	if(checked)
 	{
-		element.innerHTML = Number(element.innerHTML) + Number(prof_bonus.innerHTML);
+		element.innerHTML = Number(element.innerHTML) + Number(prof_bonus);
 
 	}
 	else
 	{
-		element.innerHTML = Number(element.innerHTML) - Number(prof_bonus.innerHTML);
+		element.innerHTML = Number(element.innerHTML) - Number(prof_bonus);
 	}
 	
 	if(Number(element.innerHTML)<0)
@@ -322,4 +416,9 @@ function update_skill_exp(skill, checked)
 function parenth_to_lower(list_entry)
 {
 	return list_entry.substring(1,4).toLowerCase();
+}
+
+function skill_bonus_calc(ability_mod, proficiency_bonus, expertise_bonus)
+{
+	return Number(ability_mod)+Number(proficiency_bonus)+Number(expertise_bonus);
 }

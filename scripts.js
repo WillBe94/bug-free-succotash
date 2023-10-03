@@ -92,8 +92,15 @@ function init()
 		fireOnChange(ability_scores[i]);
 	}
 
+	//uncheck any saves
+	const saves = document.querySelectorAll("input[type='checkbox'");
+	for (let i=0; i<saves.length; i++)
+	{
+		saves[i].checked=false;
+	}
+
 	//default level to 1
-	const class_level = document.querySelectorAll("input[data-level");
+	const class_level = document.querySelectorAll("input[data-level]");
 	class_level[0].value="";
 	document.getElementById("character_level").value = 1;
 	//default proficiency bonus to 2
@@ -303,9 +310,12 @@ function removeClass(index)
 function ability_mod(score, ability)
 {
 	const ability_mod_element = document.getElementById(ability+"_mod");
+	const ability_save_element = document.getElementById(ability+"_save");
 	const modifier = Math.floor((score-10)/2);
 	ability_mod_element.value = modifier;
+	ability_save_element.value = modifier;
 	fireOnChange(ability_mod_element);
+	fireOnChange(ability_save_element);
 }
 
 function update_skill_prof_bonus()
@@ -421,4 +431,33 @@ function parenth_to_lower(list_entry)
 function skill_bonus_calc(ability_mod, proficiency_bonus, expertise_bonus)
 {
 	return Number(ability_mod)+Number(proficiency_bonus)+Number(expertise_bonus);
+}
+
+function update_save(ability, isChecked)
+{
+	const element = document.getElementById(ability+"_save");
+	const ability_mod = document.getElementById(ability+"_mod");
+	//console.log(ability_mod);
+	//console.log(isChecked);
+	if(isChecked)
+	{
+		element.value = Number(ability_mod.value) + Number(global_prof_bonus_element.value);
+	}
+	else
+	{
+		element.value = Number(ability_mod.value);
+	}
+}
+
+function update_save_prof()
+{
+	let list = querySelectorAll("input[data-save-prof]");
+	for(let i=0; i<list.length; i++)
+	{
+		if(list[i].checked)
+		{
+			console.log(list[i]);
+			fireOnChange(list[i]);
+		}
+	}
 }

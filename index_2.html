@@ -10,6 +10,7 @@
 	<body>
 		<input type="text" placeholder="Character Name" id="name_box">
 		<input type="text" placeholder="Ancestry" id="ancestry_box">
+		<input type="text" placeholder="Background" id="background_box">
 		
 		Character Level:
 		<input id="character_level" min="1" max="20" value="1" class="h3" size="1" readonly onchange="calc_prof_bonus(this.value);">
@@ -21,11 +22,11 @@
 		</div><br>
 		<div>
 			<h2>Proficiency Bonus</h2>
-			<input class="h3" id="prof_bonus" value=2 readonly size="1" onchange="update_skill_prof_bonus();">
+			<input class="h3" id="prof_bonus" value=2 readonly size="1" onchange="update_skill_prof_bonus(); update_save_prof();">
 		</div><br>
 		<div id="ability_scores">
 			<h2>Ability Scores</h2>
-				<table class="">
+				<table class="c">
 					<tr class="bold">
 						<td class="c"><input class="h3" type="text" id="str_mod" value="0" readonly onchange="update_skill_ability('str');"></td>
 						<td class="c"><input class="h3" type="text" id="dex_mod" value="0" readonly onchange="update_skill_ability('dex');"></td>
@@ -34,13 +35,13 @@
 						<td class="c"><input class="h3" type="text" id="wis_mod" value="0" readonly onchange="update_skill_ability('wis');"></td>
 						<td class="c"><input class="h3" type="text" id="cha_mod" value="0" readonly onchange="update_skill_ability('cha');"></td>
 					</tr>
-					<tr class="margin">
-						<td><input type="number" min=1 id="str_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'str');"></td>
-						<td><input type="number" min=1 id="dex_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'dex');"></td>
-						<td><input type="number" min=1 id="con_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'con');"></td>
-						<td><input type="number" min=1 id="int_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'int');"></td>
-						<td><input type="number" min=1 id="wis_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'wis');"></td>
-						<td><input type="number" min=1 id="cha_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'cha');"></td>
+					<tr class="">
+						<td><input type="number" min=1 size="5" id="str_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'str');"></td>
+						<td><input type="number" min=1 size="5" id="dex_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'dex');"></td>
+						<td><input type="number" min=1 size="5" id="con_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'con');"></td>
+						<td><input type="number" min=1 size="5" id="int_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'int');"></td>
+						<td><input type="number" min=1 size="5" id="wis_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'wis');"></td>
+						<td><input type="number" min=1 size="5" id="cha_score" data-ability-score placeholder="10" onchange="ability_mod(this.value,'cha');"></td>
 					</tr>
 					<tr>
 						<td class="c">Strength</td>
@@ -51,6 +52,41 @@
 						<td class="c">Charisma</td>
 					</tr>
 				</table>
+		</div>
+		<div id="saving_throws">
+			<h2>Saving Throws</h2>
+			<table title="Saving Throws">
+				<tr>
+					<td class="c">Strength</td>
+					<td class="c"><input type="checkbox" data-save-prof id="str_save_check" onchange="update_save('str', this.checked);"></td>
+					<td><input class="h3" type="text" id="str_save" value="0" readonly></td>
+				</tr>
+				<tr>
+					<td class="c">Dexterity</td>
+					<td class="c"><input type="checkbox" data-save-prof id="dex_save_check" onchange="update_save('dex', this.checked);"></td>
+					<td><input class="h3" type="text" id="dex_save" value="0" readonly></td>
+				</tr>
+				<tr>
+					<td class="c">Constitution</td>
+					<td class="c"><input type="checkbox" data-save-prof id="con_save_check" onchange="update_save('con', this.checked);"></td>
+					<td><input class="h3" type="text" id="con_save" value="0" readonly></td>
+				</tr>
+				<tr>
+					<td class="c">Intelligence</td>
+					<td class="c"><input type="checkbox" data-save-prof id="int_save_check" onchange="update_save('int', this.checked);"></td>
+					<td><input class="h3" type="text" id="int_save" value="0" readonly></td>
+				</tr>
+				<tr>
+					<td class="c">Wisdom</td>
+					<td class="c"><input type="checkbox" data-save-prof id="wis_save_check" onchange="update_save('wis', this.checked);"></td>
+					<td><input class="h3" type="text" id="wis_save" value="0" readonly></td>
+				</tr>
+				<tr>
+					<td class="c">Charisma</td>
+					<td class="c"><input type="checkbox" id="cha_save_check" onchange="update_save('cha', this.checked);"></td>
+					<td><input class="h3" type="text" id="cha_save" value="0" readonly></td>
+				</tr>
+			</table>
 		</div>
 		<br>
 		<div id="skill_scores">
